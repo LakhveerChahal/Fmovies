@@ -1,0 +1,94 @@
+﻿@using Fmovies.ViewModels
+@using Fmovies.Models
+@model Fmovies.ViewModels.MoviesViewModel
+
+@{
+    ViewBag.Title = "Movies";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/movies.css" />
+@using (Html.BeginForm("selectedMovies", "Movie"))
+{
+    <div class="d-flex flex-wrap justify-content-around">
+        @if (!Model.movies.Any())
+        {
+            <p>No movies yet!</p>
+        }
+        else
+        {
+            int i=0;
+            foreach (var m in Model.movies)
+            {
+                <div style="width: 30%">
+                    <div class="card movieCard">
+                        <div class="card-header" style="margin: 0 auto">
+                            <img src="@m.URL" style="width: 100%" />
+                        </div>
+                        <div class="card-title p-2">
+                            <div class="clearfix">
+                                <span>@m.movieName</span>
+                                @Html.CheckBox("movieCheckbox", false, new { @value = m.movieId, @class = "float-right movieCheck", @hidden = true})
+
+                            </div>
+                            <p>Price: @m.moviePrice</p>
+                            @{
+                                var gname = Model.genres.SingleOrDefault(g => g.genreId.Equals(m.genreId));
+                                <p>Genre: @gname.genreName</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                i++;
+            }
+        }
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+        </div>
+        <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-8"></div>
+                <div class="col-md-4">
+                    <input type="submit" value="Proceed to Checkout" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section scripts{
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".movieCard").on("click", function () {
+            var checkProp = false;
+            $(this).find(".movieCheck").each(function () {
+                if ($(this).prop("checked")) {
+                    $(this).prop("checked", false);
+                }
+                else {
+                    $(this).prop("checked", true);
+                    checkProp = true;
+                }
+            });
+            if (checkProp) {
+                $(this).css("background-color", "lightgreen");
+            }
+            else {
+                $(this).css("background-color", "white");
+            }
+        });
+
+        $(".movieCard").each(function () {
+            var movieCard = $(this);
+            $(this).find(".movieCheck").each(function () {
+                if ($(this).prop("checked")) {
+                    movieCard.css("background-color", "lightgreen");
+                }
+                else {
+                    movieCard.css("background-color", "white");
+                }
+            });
+        })
+    });
+
+</script>
+
+}

@@ -1,0 +1,6 @@
+﻿.movieCard:hover{
+    transform: scale(1.03);
+    transition: .5s;
+    background-color: lightgray ;
+    cursor: pointer
+}

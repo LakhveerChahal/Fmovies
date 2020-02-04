@@ -1,0 +1,55 @@
+﻿@using Fmovies.ViewModels
+@using Fmovies.Models
+@model BookingViewModel
+
+@{
+    ViewBag.Title = "Display Cart";
+}
+<h2 class="pt-2"><span class="fa fa-shopping-cart"></span> Your Cart</h2>
+<hr />
+<div class="row">
+    <div class="col-md-8">
+        <h4 class="display-5">User Id: @Model.userid</h4>
+        @foreach(var b in Model.bookings)
+        {
+            <div class="card">
+                <div class="card-header clearfix">
+                    <p class="lead" style="display: inline-block">Booking Id: @b.BookingId </p>
+                    <p class="float-right lead" style="display: inline-block">Total Price: &#8377;@b.totalPrice </p>
+
+                </div>
+                <div class="card-body">
+                    <p>Booking Date: @b.bookingDate</p>
+                    @{
+                        string movietext;
+                        List<Movie> movies = new List<Movie>();
+                        List<BookedMoviesList> bookedMovies = new List<BookedMoviesList>();
+                        bookedMovies = Model.bookedMoviesLists.FindAll(x => x.bookingId == b.BookingId);
+                        foreach (BookedMoviesList bookedMovie in bookedMovies)
+                        {
+                            movies.Add(Model.movies.SingleOrDefault(x => x.movieId == bookedMovie.movieId));
+                        }
+                    }
+                    @if (movies.Count > 1)
+                    {
+                        movietext = "Your ordered movies are: ";
+                    }
+                    else
+                    {
+                        movietext = "Your ordered movie is:";
+                    }
+                    <p>@movietext</p>
+                    <ol>
+                        @foreach (Movie m in movies)
+                        {
+                            <li>@m.movieName</li>
+                        }
+                    </ol>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+

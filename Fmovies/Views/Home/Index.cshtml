@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Home ";
+}
+<div class="d-flex justify-content-center">
+    <div>
+        @using (Html.BeginForm("search", "Movies"))
+        {
+            <div class="form-group">
+                @Html.Label("Search")
+                @Html.TextBox("movieSearch", "", new { @class = "form-control" })
+            </div>
+        }
+    </div>
+</div>
