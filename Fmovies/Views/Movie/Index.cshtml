@@ -26,7 +26,7 @@
                         <div class="card-title p-2">
                             <div class="clearfix">
                                 <span>@m.movieName</span>
-                                @Html.CheckBox("movieCheckbox", false, new { @value = m.movieId, @class = "float-right movieCheck", @hidden = true})
+                                @Html.CheckBox("movieCheckbox", false, new { @value = m.movieId, @class = "float-right movieCheck", @hidden = true, @id=m.movieId})
 
                             </div>
                             <p>Price: @m.moviePrice</p>

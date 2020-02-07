@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Fmovies.ViewModels;
 using System.Security.Claims;
 using System.Dynamic;
+using System.Web.Helpers;
 
 namespace Fmovies.Controllers
 {
@@ -106,6 +107,36 @@ namespace Fmovies.Controllers
             moviesViewModel = GetSelectedMovies(form);
             return View(moviesViewModel);
         }
+        public PartialViewResult MoviesPartial(MoviesViewModel moviesViewModel)
+        {
+            return PartialView("SelectedMoviesPartial", moviesViewModel);
+        }
+        [HttpPost]
+        public PartialViewResult SelectedMoviesPartial(int selectedId)
+        {
+            MoviesViewModel moviesViewModel = new MoviesViewModel();
+            moviesViewModel = (MoviesViewModel)TempData["movieViewModel"];
+            if (selectedId != -1)
+            {
+                moviesViewModel.selectedIds.Remove(selectedId);
+                moviesViewModel.totalPrice -= moviesViewModel.movies.SingleOrDefault(x => x.movieId == selectedId).moviePrice;
+                if (TempData["removedIds"] == null)
+                {
+                    List<int> removedIds = new List<int>();
+                    removedIds.Add(selectedId);
+                    TempData["removedIds"] = removedIds;
+                }
+                else
+                {
+                    List<int> removedIds = (List<int>)TempData["removedIds"];
+                    removedIds.Add(selectedId);
+                    TempData["removedIds"] = removedIds;
+                }
+            }
+            return PartialView(moviesViewModel);
+        }
+
+        [Authorize]
         public ActionResult SaveToCart()
         {
             MoviesViewModel moviesViewModel = new MoviesViewModel();

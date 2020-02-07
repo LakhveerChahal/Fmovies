@@ -1,0 +1,44 @@
+﻿@using Fmovies.Models
+@model Fmovies.ViewModels.MoviesViewModel
+<div id="movieList">
+    @foreach (var id in Model.selectedIds)
+    {
+        Movie m = new Movie();
+        m = Model.movies.SingleOrDefault(x => x.movieId == id);
+        Genre g = new Genre();
+        g = Model.genres.SingleOrDefault(x => x.genreId == m.genreId);
+        Model.totalPrice += m.moviePrice;
+        <div class="card">
+            <div class="card-body">
+                <div class="row p-2">
+                    <div class="col-md-4">
+                        <img src=@m.URL>
+                    </div>
+                    <div class="col-md-8 clearfix">
+                        <p class="d-inline-block">@m.movieName</p>
+                        @Ajax.ActionLink("Remove",
+                        "SelectedMoviesPartial",
+                        "Movie",
+                        new { selectedId = m.movieId },
+                        new AjaxOptions
+                        {
+                            UpdateTargetId = "movieList",
+                            HttpMethod = "POST",
+                            InsertionMode =InsertionMode.Replace
+                        },
+                        new
+                        {
+                            @class = "btn btn-dark float-right mybtn"
+                        })
+                        <p>Genre: @g.genreName<p>
+                        <p>Price: &#8377;@m.moviePrice</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <h5 class="display-6" style="display:inline-block">Your total price: &#8377;@Model.totalPrice</h5>
+
+</div>
