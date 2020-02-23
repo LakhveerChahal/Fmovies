@@ -392,7 +392,7 @@
     <Content Include="Views\Movie\Index.cshtml" />
     <Content Include="Views\Movie\SelectedMovies.cshtml" />
     <Content Include="Views\Movie\DisplayCart.cshtml" />
-    <Content Include="Views\Movie\SelectedMoviesPartial.cshtml" />
+    <Content Include="Views\Movie\_SelectedMoviesPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

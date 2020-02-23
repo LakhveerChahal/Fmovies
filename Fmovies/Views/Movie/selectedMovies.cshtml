@@ -7,12 +7,10 @@
 <div class="row">
     <div class="col-md-8">
         @Html.Action("MoviesPartial", Model)
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-8">
-        @Html.ActionLink("Save to cart", "SaveToCart", "", new { @class = "btn btn-warning" })
-        
+        @{
+            TempData["movieViewModel"] = Model;
+            TempData.Keep("movieViewModel");
+        }
     </div>
 </div>
 

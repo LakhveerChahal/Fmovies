@@ -1,13 +1,10 @@
 ﻿using Fmovies.Models;
+using Fmovies.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Fmovies.ViewModels;
 using System.Security.Claims;
-using System.Dynamic;
-using System.Web.Helpers;
+using System.Web.Mvc;
 
 namespace Fmovies.Controllers
 {
@@ -24,6 +21,7 @@ namespace Fmovies.Controllers
         {
             _context.Dispose();
         }
+        
         public ViewResult Index()
         {
             List<Movie> getMovies = new List<Movie>();
@@ -32,11 +30,13 @@ namespace Fmovies.Controllers
             List<Genre> getGenres = new List<Genre>();
             getGenres = _context.Genres.ToList();
 
-            MoviesViewModel moviesViewModel = new MoviesViewModel {
+            MoviesViewModel moviesViewModel = new MoviesViewModel
+            {
                 movies = getMovies,
                 genres = getGenres,
                 totalPrice = 0
             };
+            TempData.Remove("removedIds");
             return View(moviesViewModel);
         }
         // Helper Method
@@ -65,6 +65,7 @@ namespace Fmovies.Controllers
             };
             moviesViewModel.selectedIds = selectedIds;
             moviesViewModel.userid = FetchUserId();
+            TempData.Keep("removedIds");
             return moviesViewModel;
         }
 
@@ -105,21 +106,23 @@ namespace Fmovies.Controllers
             }
             MoviesViewModel moviesViewModel = new MoviesViewModel();
             moviesViewModel = GetSelectedMovies(form);
+            
             return View(moviesViewModel);
         }
         public PartialViewResult MoviesPartial(MoviesViewModel moviesViewModel)
         {
-            return PartialView("SelectedMoviesPartial", moviesViewModel);
+            return PartialView("_SelectedMoviesPartial", moviesViewModel);
         }
         [HttpPost]
-        public PartialViewResult SelectedMoviesPartial(int selectedId)
+        public PartialViewResult _SelectedMoviesPartial(int selectedId = -1)
         {
             MoviesViewModel moviesViewModel = new MoviesViewModel();
+            moviesViewModel = (MoviesViewModel)ViewBag.movieViewModel;
             moviesViewModel = (MoviesViewModel)TempData["movieViewModel"];
+            TempData.Keep("movieViewModel");
             if (selectedId != -1)
             {
                 moviesViewModel.selectedIds.Remove(selectedId);
-                moviesViewModel.totalPrice -= moviesViewModel.movies.SingleOrDefault(x => x.movieId == selectedId).moviePrice;
                 if (TempData["removedIds"] == null)
                 {
                     List<int> removedIds = new List<int>();
@@ -141,7 +144,7 @@ namespace Fmovies.Controllers
         {
             MoviesViewModel moviesViewModel = new MoviesViewModel();
             moviesViewModel = (MoviesViewModel)TempData["movieViewModel"];
-            TempData.Remove("movieViewModel"); 
+            TempData.Remove("movieViewModel");
             Bookings booking = new Bookings();
             booking.userId = moviesViewModel.userid;
             booking.bookingDate = DateTime.Now;
@@ -151,7 +154,7 @@ namespace Fmovies.Controllers
             _context.SaveChanges();
             BookedMoviesList bookedMoviesList = new BookedMoviesList();
             bookedMoviesList.bookingId = booking.BookingId;
-            foreach(int id in moviesViewModel.selectedIds)
+            foreach (int id in moviesViewModel.selectedIds)
             {
                 bookedMoviesList.movieId = id;
                 _context.bookedMoviesLists.Add(bookedMoviesList);
