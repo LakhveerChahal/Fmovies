@@ -1,0 +1,26 @@
+﻿@model Fmovies.ViewModels.CartButtonViewModel
+@{ 
+    string linktext = "";
+    if (Model.movieAdded)
+    {
+        linktext = "Added";
+    }
+    else
+    {
+        linktext = "Add to Cart";
+    }
+}
+@Ajax.ActionLink(linktext, "AddToCart", "Cart",
+                new { selectedId = Model.MovieId },
+                new AjaxOptions()
+                {
+                    HttpMethod = "GET",
+                    UpdateTargetId = "btn"+Convert.ToString(Model.MovieId) ,
+                    InsertionMode = InsertionMode.Replace
+                },
+                new
+                {
+                    @class = "btn btn-warning float-right"
+
+                }
+                )

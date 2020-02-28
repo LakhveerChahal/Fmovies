@@ -5,6 +5,7 @@ using System.Web;
 using System.Net;
 using System.Web.Mvc;
 using Fmovies.Models;
+using Fmovies.ViewModels;
 using System.Security.Claims;
 
 namespace Fmovies.Controllers
@@ -14,7 +15,7 @@ namespace Fmovies.Controllers
         private int CartIdGen()
         {
             Random random = new Random();
-            int num = random.Next();
+            int num = random.Next(1000, int.MaxValue);
             return num;
         }
         private ApplicationDbContext _context;
@@ -45,37 +46,13 @@ namespace Fmovies.Controllers
             }
             return null;
         }
-        public void UserCartCheck()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                HttpCookie cookie = Request.Cookies["CartCookie"];
-                if (cookie != null)
-                {
-                    int cartid = Convert.ToInt32(cookie["CartId"]);
-                    List<UnauthenticatedCart> unauthenticatedCarts = new List<UnauthenticatedCart>();
-                    unauthenticatedCarts = _context.UnauthenticatedCarts.Where(p => p.cartId == cartid).ToList();
-                    AuthenticatedCart authenticatedCart = new AuthenticatedCart();
-                    if(unauthenticatedCarts.Count == 0)
-                    {
-                        return;
-                    }
-                    authenticatedCart.userId = FetchUserId();
-                    foreach(var p in unauthenticatedCarts)
-                    {
-                        authenticatedCart.movieId = p.movieId;
-                        _context.AuthenticatedCarts.Add(authenticatedCart);
-                        _context.UnauthenticatedCarts.Remove(p);
-                    }
-                    _context.SaveChanges();
-                }
-            }
-        }
-        public void AddToCart(int selectedId=-1)
+        public ActionResult AddToCart(int selectedId = -1)
         {
             if (selectedId == -1)
-                return;
-            HttpCookie cookie = Request.Cookies["CartCookie"];
+                return new HttpNotFoundResult();
+            bool mAdded = false;
+            HttpCookie cookie = new HttpCookie("CartCookie");
+            cookie = Request.Cookies["CartCookie"];
             int cartid;
             if (cookie == null)
             {
@@ -87,23 +64,52 @@ namespace Fmovies.Controllers
             }
             else
             {
-                cartid = Convert.ToInt32(cookie["CartCookie"]);
+                cartid = Convert.ToInt32(cookie["CartId"]);
             }
             if (User.Identity.IsAuthenticated)
             {
                 AuthenticatedCart authenticatedCart = new AuthenticatedCart();
-                authenticatedCart.movieId = selectedId;
-                authenticatedCart.userId = FetchUserId();
-                _context.AuthenticatedCarts.Add(authenticatedCart);
+                string userid = FetchUserId();
+                authenticatedCart = _context.AuthenticatedCarts.SingleOrDefault(p => p.userId == userid && p.movieId == selectedId);
+                if (authenticatedCart != null)
+                {
+                    _context.AuthenticatedCarts.Remove(authenticatedCart);
+                    mAdded = false;
+                }
+                else
+                {
+                    authenticatedCart = new AuthenticatedCart();
+                    authenticatedCart.movieId = selectedId;
+                    authenticatedCart.userId = userid;
+                    _context.AuthenticatedCarts.Add(authenticatedCart);
+                    mAdded = true;
+                }
             }
             else
             {
                 UnauthenticatedCart unauthenticatedCart = new UnauthenticatedCart();
-                unauthenticatedCart.cartId = cartid;
-                unauthenticatedCart.movieId = selectedId;
-                _context.UnauthenticatedCarts.Add(unauthenticatedCart);
+                unauthenticatedCart = _context.UnauthenticatedCarts.SingleOrDefault(p => p.cartId == cartid && p.movieId == selectedId);
+                if (unauthenticatedCart != null)
+                {
+                    _context.UnauthenticatedCarts.Remove(unauthenticatedCart);
+                    mAdded = false;
+                }
+                else
+                {
+                    unauthenticatedCart = new UnauthenticatedCart();
+                    unauthenticatedCart.cartId = cartid;
+                    unauthenticatedCart.movieId = selectedId;
+                    _context.UnauthenticatedCarts.Add(unauthenticatedCart);
+                    mAdded = true;
+                }
             }
             _context.SaveChanges();
+            CartButtonViewModel cartButtonViewModel = new CartButtonViewModel()
+            {
+                movieAdded = mAdded,
+                MovieId = selectedId
+            };
+            return PartialView("~/Views/Movie/_CartButtonPartial.cshtml", cartButtonViewModel);
         }
     }
 }

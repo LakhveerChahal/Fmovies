@@ -5,7 +5,6 @@
 @{
     ViewBag.Title = "Movies";
 }
-@Html.Action("UserCartCheck", "Cart");
 <div class="d-flex flex-wrap justify-content-around">
     @if (!Model.movies.Any())
     {
@@ -14,6 +13,12 @@
     else
     {
         int i = 0;
+        bool added = false;
+        List<int> movieIds = new List<int>();
+        if (ViewBag.movieIds != null)
+        {
+            movieIds = ViewBag.movieIds;
+        }
         foreach (var m in Model.movies)
         {
             <div style="width: 30%" class="p-2">
@@ -22,20 +27,28 @@
                         <img src="@m.URL" style="width: 100%" />
                     </div>
                     <div class="card-title p-2">
+                        @{ 
+                            string spanid = "btn" + m.movieId;
+                        }
                         <div class="clearfix">
                             <span>@m.movieName</span>
-                            @Ajax.ActionLink("Add to cart", "AddToCart", "Cart",
-                           new { selectedId = m.movieId },
-                           new AjaxOptions()
-                           {
-                               HttpMethod = "GET"
-                           },
-                           new
-                            {
-                                @class = "btn btn-warning cartbtn float-right",
-                                @data_btnchecked = "false"
-                           }
-                           )
+                            @{ 
+                                if (movieIds != null && movieIds.Contains(m.movieId))
+                                {
+                                    added = true;
+                                }
+                                else
+                                {
+                                    added = false;
+                                }
+                                CartButtonViewModel cartButtonViewModel = new CartButtonViewModel() {
+                                    movieAdded = added,
+                                    MovieId = m.movieId
+                                };
+                            }
+                        <span id=@spanid>
+                            @Html.Partial("~/Views/Movie/_CartButtonPartial.cshtml", cartButtonViewModel)
+                        </span>
                         </div>
                         <p>Price: @m.moviePrice</p>
                         @{
@@ -63,18 +76,18 @@
 </div>
 @section scripts{
     <script type="text/javascript">
-        $(document).ready(function () {
-            $(".cartbtn").on("click", function () {
-                if ($(this).attr("data-btnchecked") == "false") {
-                    $(this).html("<span class ='fa fa-check'></span> Added");
-                    $(this).attr("data-btnchecked", "true");
-                }
-                else {
-                    $(this).attr("data-btnchecked", "false");
-                    $(this).html("Add to cart");
-                }
-            });
-        });
+            //$(document).ready(function () {
+            //    $(".cartbtn").on("click", function () {
+            //        if ($(this).attr("data-btnchecked") == "false") {
+            //            $(this).html("<span class ='fa fa-check'></span> Added");
+            //            $(this).attr("data-btnchecked", "true");
+            //        }
+            //        else {
+            //            $(this).attr("data-btnchecked", "false");
+            //            $(this).html("Add to cart");
+            //        }
+            //    });
+            //});
 
     </script>
 

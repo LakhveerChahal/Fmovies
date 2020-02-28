@@ -3,7 +3,7 @@ using Fmovies.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Web;
 using System.Security.Claims;
 using System.Web.Mvc;
 
@@ -22,7 +22,7 @@ namespace Fmovies.Controllers
         {
             _context.Dispose();
         }
-        
+
         public ViewResult Index()
         {
             List<Movie> getMovies = new List<Movie>();
@@ -37,9 +37,62 @@ namespace Fmovies.Controllers
                 genres = getGenres,
                 totalPrice = 0
             };
+            if (User.Identity.IsAuthenticated)
+            {
+                UserCartCheck();
+                string userid = FetchUserId();
+                List<AuthenticatedCart> authenticatedCarts = new List<AuthenticatedCart>();
+                authenticatedCarts = _context.AuthenticatedCarts.Where(p => p.userId == userid).ToList();
+                List<int> movieIds = new List<int>();
+                foreach(var x in authenticatedCarts)
+                {
+                    movieIds.Add(x.movieId);
+                }
+                ViewBag.movieIds = movieIds;
+            }
+            else
+            {
+                HttpCookie cookie = Request.Cookies["CartCookie"];
+                if(cookie != null)
+                {
+                    int cartid = Convert.ToInt32(cookie["CartId"]);
+                    List<UnauthenticatedCart> unauthenticatedCarts = new List<UnauthenticatedCart>();
+                    unauthenticatedCarts = _context.UnauthenticatedCarts.Where(p => p.cartId == cartid).ToList();
+                    List<int> movieIds = new List<int>();
+                    foreach(var x in unauthenticatedCarts)
+                    {
+                        movieIds.Add(x.movieId);
+                    }
+                    ViewBag.movieIds = movieIds;
+                }
+            }
             return View(moviesViewModel);
         }
+
         // Helper Method
+        public void UserCartCheck()
+        {
+            HttpCookie cookie = Request.Cookies["CartCookie"];
+            if (cookie != null)
+            {
+                int cartid = Convert.ToInt32(cookie["CartId"]);
+                List<UnauthenticatedCart> unauthenticatedCarts = new List<UnauthenticatedCart>();
+                unauthenticatedCarts = _context.UnauthenticatedCarts.Where(p => p.cartId == cartid).ToList();
+                AuthenticatedCart authenticatedCart = new AuthenticatedCart();
+                if (unauthenticatedCarts.Count == 0)
+                {
+                    return;
+                }
+                authenticatedCart.userId = FetchUserId();
+                foreach (var p in unauthenticatedCarts)
+                {
+                    authenticatedCart.movieId = p.movieId;
+                    _context.AuthenticatedCarts.Add(authenticatedCart);
+                    _context.UnauthenticatedCarts.Remove(p);
+                    _context.SaveChanges();
+                }
+            }
+        }
         private MoviesViewModel GetSelectedMovies(FormCollection form)
         {
             string[] checkboxes = form["movieCheckbox"].Split(',');
@@ -105,7 +158,7 @@ namespace Fmovies.Controllers
             }
             MoviesViewModel moviesViewModel = new MoviesViewModel();
             moviesViewModel = GetSelectedMovies(form);
-            
+
             return View(moviesViewModel);
         }
         public PartialViewResult MoviesPartial(MoviesViewModel moviesViewModel)
