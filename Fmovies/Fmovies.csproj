@@ -170,6 +170,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MovieController.cs" />
@@ -204,14 +205,24 @@
     <Compile Include="Migrations\202002010743081_AddedBookingTable1.Designer.cs">
       <DependentUpon>202002010743081_AddedBookingTable1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202002251421488_addedCartTables.cs" />
+    <Compile Include="Migrations\202002251421488_addedCartTables.Designer.cs">
+      <DependentUpon>202002251421488_addedCartTables.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002281427576_CorrectedAuthenticatedCartTable.cs" />
+    <Compile Include="Migrations\202002281427576_CorrectedAuthenticatedCartTable.Designer.cs">
+      <DependentUpon>202002281427576_CorrectedAuthenticatedCartTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AuthenticatedCart.cs" />
     <Compile Include="Models\BookedMoviesList.cs" />
     <Compile Include="Models\Bookings.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Movie.cs" />
+    <Compile Include="Models\UnauthenticatedCart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BookingViewModel.cs" />
@@ -393,9 +404,11 @@
     <Content Include="Views\Movie\SelectedMovies.cshtml" />
     <Content Include="Views\Movie\DisplayCart.cshtml" />
     <Content Include="Views\Movie\_SelectedMoviesPartial.cshtml" />
+    <Content Include="Views\Shared\_CartPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Cart\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -427,6 +440,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002010743081_AddedBookingTable1.resx">
       <DependentUpon>202002010743081_AddedBookingTable1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002251421488_addedCartTables.resx">
+      <DependentUpon>202002251421488_addedCartTables.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002281427576_CorrectedAuthenticatedCartTable.resx">
+      <DependentUpon>202002281427576_CorrectedAuthenticatedCartTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

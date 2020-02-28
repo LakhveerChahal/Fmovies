@@ -23,6 +23,8 @@ namespace Fmovies.Models
         public DbSet<Movie> Movies { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Bookings> Bookings { get; set; }
+        public DbSet<UnauthenticatedCart> UnauthenticatedCarts { get; set; }
+        public DbSet<AuthenticatedCart> AuthenticatedCarts { get; set; }
         public DbSet<BookedMoviesList> bookedMoviesLists { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

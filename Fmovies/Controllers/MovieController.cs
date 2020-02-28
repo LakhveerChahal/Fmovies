@@ -3,6 +3,7 @@ using Fmovies.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Web.Mvc;
 
@@ -12,7 +13,7 @@ namespace Fmovies.Controllers
     {
         // GET: Movie
         private ApplicationDbContext _context;
-        private List<int> RemovedMoviesId = new List<int>();
+        private List<int> selectedIds = new List<int>();
         public MovieController()
         {
             _context = new ApplicationDbContext();
@@ -36,7 +37,6 @@ namespace Fmovies.Controllers
                 genres = getGenres,
                 totalPrice = 0
             };
-            TempData.Remove("removedIds");
             return View(moviesViewModel);
         }
         // Helper Method
@@ -65,7 +65,6 @@ namespace Fmovies.Controllers
             };
             moviesViewModel.selectedIds = selectedIds;
             moviesViewModel.userid = FetchUserId();
-            TempData.Keep("removedIds");
             return moviesViewModel;
         }
 
