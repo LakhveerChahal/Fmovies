@@ -1,0 +1,47 @@
+﻿@model Fmovies.ViewModels.MoviesViewModel
+@{
+    <span id="movieCount" class="text-hide">@Model.movies.Count</span>
+    if (Model.movies.Count == 0)
+    {
+        <h1 class="lead display-3"><span class="fa fa-shopping-cart"></span> Cart is empty :(</h1>
+    }
+    else
+    {
+        foreach (var movie in Model.movies)
+        {
+            <div class="card p-2 mb-2">
+                <div class="clearfix">
+                    <div class="float-left mr-2">
+                        <img src=@movie.URL style="width: auto; height: auto">
+                    </div>
+                    <div>
+                        @Ajax.ActionLink("Remove", "RemoveSelected",
+                       "Cart",
+                       new { selectedId = movie.movieId },
+                       new AjaxOptions
+                       {
+                           HttpMethod = "GET",
+                           InsertionMode = InsertionMode.Replace,
+                           UpdateTargetId = "movieList",
+                           OnSuccess = "UpdateCartCount"
+                       },
+                       new { @class = "btn btn-warning float-right" }
+                       )
+
+                        <h4>@movie.movieName</h4>
+
+                        @{
+                            string gname = Model.genres.First(g => g.genreId == movie.genreId).genreName;
+                        }
+                        <h6>Genre: @gname</h6>
+                        <h6>Price: &#8377;@movie.moviePrice</h6>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="float-right">
+            <span>Total Price: &#8377;@Model.totalPrice</span>
+            @Html.ActionLink("Order", "SaveCart", "Cart", "", new { @class = "btn btn-primary" })
+        </div>
+    }
+}

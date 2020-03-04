@@ -1,5 +1,5 @@
 ﻿@model Fmovies.ViewModels.CartButtonViewModel
-@{ 
+@{
     string linktext = "";
     if (Model.movieAdded)
     {
@@ -9,14 +9,30 @@
     {
         linktext = "Add to Cart";
     }
+
+    HttpCookie cookie = Request.Cookies["CartCount"];
+    if(cookie == null)
+    {
+        cookie = new HttpCookie("CartCount");
+        cookie["Count"] = Convert.ToString(Model.TotalCartCount);
+        cookie.Expires = DateTime.Now.AddMonths(1);
+        Response.Cookies.Add(cookie);
+    }
+    else
+    {
+        cookie["Count"] = Convert.ToString(Model.TotalCartCount);
+        Response.Cookies.Add(cookie);
+    }
 }
+
 @Ajax.ActionLink(linktext, "AddToCart", "Cart",
                 new { selectedId = Model.MovieId },
                 new AjaxOptions()
                 {
                     HttpMethod = "GET",
-                    UpdateTargetId = "btn"+Convert.ToString(Model.MovieId) ,
-                    InsertionMode = InsertionMode.Replace
+                    UpdateTargetId = "btn" + Convert.ToString(Model.MovieId),
+                    InsertionMode = InsertionMode.Replace,
+                    OnSuccess = "UpdateCartIndex"
                 },
                 new
                 {
@@ -24,3 +40,4 @@
 
                 }
                 )
+

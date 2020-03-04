@@ -5,6 +5,7 @@
 @{
     ViewBag.Title = "Movies";
 }
+<script type="text/javascript" src="~/Scripts/MyJqueryFiles/myJquery.js"></script>
 <div class="d-flex flex-wrap justify-content-around">
     @if (!Model.movies.Any())
     {
@@ -43,14 +44,15 @@
                                 }
                                 CartButtonViewModel cartButtonViewModel = new CartButtonViewModel() {
                                     movieAdded = added,
-                                    MovieId = m.movieId
+                                    MovieId = m.movieId,
+                                    TotalCartCount = movieIds.Count
                                 };
                             }
                         <span id=@spanid>
                             @Html.Partial("~/Views/Movie/_CartButtonPartial.cshtml", cartButtonViewModel)
                         </span>
                         </div>
-                        <p>Price: @m.moviePrice</p>
+                        <p>Price: &#8377;@m.moviePrice</p>
                         @{
                             var gname = Model.genres.SingleOrDefault(g => g.genreId.Equals(m.genreId));
                             <p>Genre: @gname.genreName</p>
@@ -66,29 +68,6 @@
     <div class="col-md-8">
     </div>
     <div class="col-md-4">
-        <div class="row">
-            <div class="col-md-8"></div>
-            <div class="col-md-4">
-                @*<input type="submit" value="Proceed to Checkout" class="btn btn-primary" />*@
-            </div>
-        </div>
+        <a href="~/Cart/CartSummary" class="btn btn-success"><span class="fa fa-shopping-cart"></span> Proceed to checkout</a>
     </div>
 </div>
-@section scripts{
-    <script type="text/javascript">
-            //$(document).ready(function () {
-            //    $(".cartbtn").on("click", function () {
-            //        if ($(this).attr("data-btnchecked") == "false") {
-            //            $(this).html("<span class ='fa fa-check'></span> Added");
-            //            $(this).attr("data-btnchecked", "true");
-            //        }
-            //        else {
-            //            $(this).attr("data-btnchecked", "false");
-            //            $(this).html("Add to cart");
-            //        }
-            //    });
-            //});
-
-    </script>
-
-}

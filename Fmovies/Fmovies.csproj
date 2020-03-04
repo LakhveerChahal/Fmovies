@@ -227,6 +227,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\BookingViewModel.cs" />
     <Compile Include="ViewModels\CartButtonViewModel.cs" />
+    <Compile Include="ViewModels\CurrentBooking.cs" />
     <Compile Include="ViewModels\MoviesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -402,15 +403,16 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Movie\Index.cshtml" />
-    <Content Include="Views\Movie\SelectedMovies.cshtml" />
     <Content Include="Views\Movie\DisplayCart.cshtml" />
-    <Content Include="Views\Movie\_SelectedMoviesPartial.cshtml" />
     <Content Include="Views\Shared\_CartPartial.cshtml" />
+    <Content Include="Views\Cart\CartSummary.cshtml" />
+    <Content Include="Views\Cart\_SelectedMoviesPartial.cshtml" />
+    <Content Include="Views\Shared\_NavCartPartial.cshtml" />
     <Content Include="Views\Movie\_CartButtonPartial.cshtml" />
+    <Content Include="Views\Cart\SaveCart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Cart\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -13,6 +13,7 @@ namespace Fmovies
                         "~/Scripts/jquery.unobtrusive-ajax.js",
                         "~/Scripts/jquery.validate.min.js",
                         "~/Scripts/jquery.validate.unobtrusive.min.js"
+                        
                         ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(

@@ -1,0 +1,29 @@
+﻿@model Fmovies.ViewModels.CurrentBooking
+@{
+    ViewBag.Title = "Cart Saved";
+}
+<h2>Order Summary</h2>
+<div class="row">
+    <div class="col-md-8">
+        @foreach (var m in Model.movies)
+        {
+            <div class="card p-2 mb-2">
+                <div class="clearfix card-body">
+                    <div class="float-left">
+                        <img src="@m.URL" />
+                    </div>
+                    <div>
+                        <h4>@m.movieName</h4>
+                        @{
+                            string genre = Model.genres.Single(p => p.genreId == m.genreId).genreName;
+                        }
+                        <h6>@genre</h6>
+                        <h6>Price: &#8377;@m.moviePrice</h6>
+                    </div>
+                </div>
+            </div>
+        }
+        <p class="float-right">Total Price: &#8377;@Model.totalprice</p>
+    </div>
+</div>
+

@@ -9,5 +9,6 @@ namespace Fmovies.ViewModels
     {
         public bool movieAdded { get; set; }
         public int MovieId { get; set; }
+        public int TotalCartCount { get; set; }
     }
 }
